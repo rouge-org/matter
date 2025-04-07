@@ -15,7 +15,9 @@ type EngineImpl struct {
 	ctx    context.Context
 	cancel context.CancelCauseFunc
 
-	objectRoot core.Object
+	objectRoot      core.Object
+	objectCursor    core.Object
+	objectFloatList []core.Object
 }
 
 func NewEngine(config *core.EngineConfig) core.Engine {
@@ -24,6 +26,8 @@ func NewEngine(config *core.EngineConfig) core.Engine {
 	e.config = config
 
 	e.ctx, e.cancel = context.WithCancelCause(context.Background())
+
+	e.objectFloatList = make([]core.Object, 0)
 
 	return e
 }
@@ -42,6 +46,18 @@ func (e *EngineImpl) GetObjectRoot() mo.Option[core.Object] {
 	}
 
 	return mo.Some(e.objectRoot)
+}
+
+func (e *EngineImpl) GetObjectCursor() mo.Option[core.Object] {
+	if e.objectCursor == nil {
+		return mo.None[core.Object]()
+	}
+
+	return mo.Some(e.objectCursor)
+}
+
+func (e *EngineImpl) ListObjectFloat() []core.Object {
+	return e.objectFloatList
 }
 
 func (e *EngineImpl) runUpdate() {
@@ -68,7 +84,8 @@ func (e *EngineImpl) runUpdate() {
 }
 
 func (e *EngineImpl) Init() {
-
+	e.objectRoot = core.NewObjectFrame()
+	e.objectCursor = core.NewObjectCursor()
 }
 
 func (e *EngineImpl) Start() {
@@ -90,12 +107,45 @@ func (e *EngineImpl) doUpdate() bool {
 		return false
 	}
 
+	e.compute()
+
 	rl.BeginDrawing()
 
 	rl.ClearBackground(rl.Black)
+	e.render()
 	rl.DrawFPS(8, 8)
 
 	rl.EndDrawing()
 
 	return true
+}
+
+func (e *EngineImpl) compute() {
+
+}
+
+func (e *EngineImpl) computeObject(ctx core.ComputeContext, object core.Object) {
+
+}
+
+func (e *EngineImpl) render() {
+	for _, object := range e.ListObjectFloat() {
+		e.renderObjectFloat(object)
+	}
+
+	e.GetObjectCursor().
+		Map(func(value core.Object) (core.Object, bool) {
+			e.renderObject(NewRenderContext(), value)
+
+			return nil, false
+		})
+
+}
+
+func (e *EngineImpl) renderObject(ctx core.RenderContext, object core.Object) {
+	object.Render(ctx)
+}
+
+func (e *EngineImpl) renderObjectFloat(object core.Object) {
+
 }

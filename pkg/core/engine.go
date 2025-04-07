@@ -11,6 +11,8 @@ type Engine interface {
 	GetCtx() context.Context
 
 	GetObjectRoot() mo.Option[Object]
+	GetObjectCursor() mo.Option[Object]
+	ListObjectFloat() []Object
 
 	Init()
 	Start()
