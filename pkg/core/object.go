@@ -9,6 +9,7 @@ type ObjectId uuid.UUID
 
 type Object interface {
 	GetId() ObjectId
+	GetState() *ObjectState
 	AddChild(value Object)
 	GetChild(id ObjectId) mo.Option[Object]
 	ListChild() []Object
@@ -20,4 +21,31 @@ type Object interface {
 
 func NewObjectId() ObjectId {
 	return ObjectId(uuid.New())
+}
+
+type ObjectState struct {
+	flagVisible bool
+	flagHover   bool
+	flagPressed bool
+	flagClick   bool
+}
+
+func NewObjectState() *ObjectState {
+	return &ObjectState{
+		flagVisible: true,
+		flagHover:   false,
+		flagPressed: false,
+		flagClick:   false,
+	}
+}
+
+func (s *ObjectState) Reset() {
+	s.flagVisible = true
+	s.flagHover = false
+	s.flagPressed = false
+	s.flagClick = false
+}
+
+func (s *ObjectState) GetFlagVisible() bool {
+	return s.flagVisible
 }

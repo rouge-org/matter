@@ -13,6 +13,7 @@ type Engine interface {
 	GetObjectRoot() mo.Option[Object]
 	GetObjectCursor() mo.Option[Object]
 	ListObjectFloat() []Object
+	AddObjectFloat(value Object)
 
 	Init()
 	Start()

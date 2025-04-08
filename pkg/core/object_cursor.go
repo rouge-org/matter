@@ -7,6 +7,7 @@ import (
 
 type ObjectCursor struct {
 	id        ObjectId
+	state     *ObjectState
 	childList []Object
 }
 
@@ -14,6 +15,7 @@ func NewObjectCursor() Object {
 	o := new(ObjectCursor)
 
 	o.id = NewObjectId()
+	o.state = NewObjectState()
 	o.childList = make([]Object, 0)
 
 	return o
@@ -21,6 +23,10 @@ func NewObjectCursor() Object {
 
 func (o *ObjectCursor) GetId() ObjectId {
 	return o.id
+}
+
+func (o *ObjectCursor) GetState() *ObjectState {
+	return o.state
 }
 
 func (o *ObjectCursor) AddChild(value Object) {

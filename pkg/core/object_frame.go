@@ -6,6 +6,7 @@ import (
 
 type ObjectFrame struct {
 	id        ObjectId
+	state     *ObjectState
 	childList []Object
 }
 
@@ -13,6 +14,7 @@ func NewObjectFrame() Object {
 	o := new(ObjectFrame)
 
 	o.id = NewObjectId()
+	o.state = NewObjectState()
 	o.childList = make([]Object, 0)
 
 	return o
@@ -20,6 +22,10 @@ func NewObjectFrame() Object {
 
 func (o *ObjectFrame) GetId() ObjectId {
 	return o.id
+}
+
+func (o *ObjectFrame) GetState() *ObjectState {
+	return o.state
 }
 
 func (o *ObjectFrame) AddChild(value Object) {

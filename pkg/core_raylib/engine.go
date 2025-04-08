@@ -60,6 +60,10 @@ func (e *EngineImpl) ListObjectFloat() []core.Object {
 	return e.objectFloatList
 }
 
+func (e *EngineImpl) AddObjectFloat(value core.Object) {
+	e.objectFloatList = append(e.objectFloatList, value)
+}
+
 func (e *EngineImpl) runUpdate() {
 	rl.InitWindow(1280, 720, "matter")
 	defer rl.CloseWindow()
@@ -129,13 +133,15 @@ func (e *EngineImpl) computeObject(ctx core.ComputeContext, object core.Object) 
 }
 
 func (e *EngineImpl) render() {
+	ctx := NewRenderContext()
+
 	for _, object := range e.ListObjectFloat() {
-		e.renderObjectFloat(object)
+		e.renderObjectFloat(ctx, object)
 	}
 
 	e.GetObjectCursor().
 		Map(func(value core.Object) (core.Object, bool) {
-			e.renderObject(NewRenderContext(), value)
+			e.renderObject(ctx, value)
 
 			return nil, false
 		})
@@ -143,9 +149,13 @@ func (e *EngineImpl) render() {
 }
 
 func (e *EngineImpl) renderObject(ctx core.RenderContext, object core.Object) {
-	object.Render(ctx)
+	if object.GetState().GetFlagVisible() {
+		object.Render(ctx)
+	}
 }
 
-func (e *EngineImpl) renderObjectFloat(object core.Object) {
-
+func (e *EngineImpl) renderObjectFloat(ctx core.RenderContext, object core.Object) {
+	if object.GetState().GetFlagVisible() {
+		object.Render(ctx)
+	}
 }
